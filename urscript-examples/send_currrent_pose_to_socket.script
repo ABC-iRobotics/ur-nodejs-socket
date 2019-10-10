@@ -1,0 +1,95 @@
+def send_currrent_pose_to_socket():
+  set_safety_mode_transition_hardness(1)
+  set_tool_voltage(0)
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_payload(0.0)
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_input_actions_to_default()
+  set_gravity([0.0, 0.0, 9.82])
+  # begin: URCap Installation Node
+  #   Source: MQTT Connector Professional, 1.0.0, 4Each s.r.o. www.4each.cz
+  #   Type: MQTT Professional
+  global my_daemon=rpc_factory("xmlrpc", "http://127.0.0.1:40404/RPC2")
+  def mqtt_testing():
+  return my_daemon.testing()
+  end
+  def mqtt_initialize_anonymous(hostname, port):
+  return my_daemon.initialize(hostname, port)
+  end
+  def mqtt_initialize(hostname, port, user, password):
+  return my_daemon.initialize(hostname, port, user, password)
+  end
+  def mqtt_connect():
+  return my_daemon.connect()
+  end
+  def mqtt_connect_timeout(timeout):
+  return my_daemon.connect(timeout)
+  end
+  def mqtt_disconnect():
+  return my_daemon.disconnect()
+  end
+  def mqtt_publish(topic, message, qos, retained):
+  return my_daemon.publish(topic, message, qos, retained)
+  end
+  def mqtt_publish_timeout(topic, message, qos, retained, timeout):
+  return my_daemon.publish(topic, message, qos, retained, timeout)
+  end
+  def mqtt_subscribe(topic):
+  return my_daemon.subscribe(topic)
+  end
+  def mqtt_unsubscribe(topic):
+  return my_daemon.unsubscribe(topic)
+  end
+  def mqtt_unsubscribe_all():
+  return my_daemon.unsubscribe_all()
+  end
+  def mqtt_get_message(topic):
+  return my_daemon.get_message(topic)
+  end
+  def mqtt_set_max_queue(length):
+  return my_daemon.set_max_queued_messages(length)
+  end
+  def mqtt_set_last_will(topic, message, qos, retained):
+  return my_daemon.set_last_will(topic, message, qos, retained)
+  end
+  # end: URCap Installation Node
+  $ 1 "BeforeStart"
+  $ 2 "host≔'10.8.8.200'"
+  global host="10.8.8.200"
+  $ 3 "port≔30002"
+  global port=30002
+  $ 4 "socket≔ False "
+  global socket=  False  
+  $ 5 "socket_name≔'socket_0'"
+  global socket_name="socket_0"
+  $ 6 "socket_send≔ False "
+  global socket_send=  False  
+  $ 7 "Robot Program"
+  $ 8 "Loop socket≠ True "
+  while (socket !=   True  ):
+    $ 9 "socket≔socket_open(host, port, socket_name)"
+    global socket=socket_open(host, port, socket_name)
+    $ 10 "Wait: 1.0"
+    sleep(1.0)
+  end
+  $ 11 "current_pose≔get_actual_tcp_pose()"
+  global current_pose= get_actual_tcp_pose ()
+  $ 12 "Loop socket_send≠ True "
+  while (socket_send !=   True  ):
+    $ 14 "socket_send≔socket_send_string(current_pose, 'socket_0')"
+    global socket_send=socket_send_string(current_pose, "socket_0")
+    $ 15 "Wait: 1.0"
+    sleep(1.0)
+  end
+  $ 16 "socket_send≔ False "
+  global socket_send=  False  
+  $ 17 "socket_close(socket_name)"
+  socket_close(socket_name)
+  $ 18 "socket≔ False "
+  global socket=  False  
+end

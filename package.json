@@ -1,0 +1,11 @@
+{
+  "name": "ursim-listener",
+  "version": "1.0.0",
+  "description": "Receive message from URSim if it is started",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tarsoly",
+  "license": "ISC"
+}

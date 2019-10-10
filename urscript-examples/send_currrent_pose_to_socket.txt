@@ -1,0 +1,19 @@
+ Program
+   BeforeStart
+     host≔"10.8.8.200"
+     port≔30002
+     socket≔ False 
+     socket_name≔"socket_0"
+     socket_send≔ False 
+   Robot Program
+     Loop socket≠ True 
+       socket≔socket_open(host, port, socket_name)
+       Wait: 1.0
+     current_pose≔get_actual_tcp_pose()
+     Loop socket_send≠ True 
+       'socket_send≔socket_send_int(current_pose, "socket_0")'
+       socket_send≔socket_send_string(current_pose, "socket_0")
+       Wait: 1.0
+     socket_send≔ False 
+     socket_close(socket_name)
+     socket≔ False 
